@@ -50,8 +50,11 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 target_link_libraries(easylogging
   PRIVATE
-    ${CMAKE_THREAD_LIBS_INIT}
-    ${Backtrace_LIBRARIES})
+    ${CMAKE_THREAD_LIBS_INIT})
+
+if(Backtrace_FOUND)
+    target_link_libraries(easylogging ${Backtrace_LIBRARIES})
+endif()
 
 # GUI/libwallet install target
 if (BUILD_GUI_DEPS)
