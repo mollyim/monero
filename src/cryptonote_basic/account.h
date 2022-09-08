@@ -46,6 +46,14 @@ namespace cryptonote
     hw::device *m_device = &hw::get_device("default");
     crypto::chacha_iv m_encryption_iv;
 
+    BEGIN_SERIALIZE_OBJECT()
+      FIELD(m_account_address)
+      FIELD(m_spend_secret_key)
+      FIELD(m_view_secret_key)
+      FIELD(m_multisig_keys)
+      FIELD(m_encryption_iv)
+    END_SERIALIZE()
+
     BEGIN_KV_SERIALIZE_MAP()
       KV_SERIALIZE(m_account_address)
       KV_SERIALIZE_VAL_POD_AS_BLOB_FORCE(m_spend_secret_key)
@@ -108,6 +116,13 @@ namespace cryptonote
       a & m_keys;
       a & m_creation_timestamp;
     }
+
+    BEGIN_SERIALIZE_OBJECT()
+      MAGIC_FIELD("monero account")
+      VERSION_FIELD(0)
+      FIELD(m_keys)
+      FIELD(m_creation_timestamp)
+    END_SERIALIZE()
 
     BEGIN_KV_SERIALIZE_MAP()
       KV_SERIALIZE(m_keys)
