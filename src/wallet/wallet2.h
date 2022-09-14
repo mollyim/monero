@@ -1464,9 +1464,9 @@ private:
     uint64_t get_daemon_adjusted_time();
 
    /*!
-    * \brief Calculates the approximate blockchain height from current date/time.
+    * \brief Calculates the approximate blockchain height from given date/time.
     */
-    uint64_t get_approximate_blockchain_height() const;
+    uint64_t get_approximate_blockchain_height(uint64_t timestamp = time(NULL) /* now */) const;
     uint64_t estimate_blockchain_height();
     std::vector<size_t> select_available_outputs_from_histogram(uint64_t count, bool atleast, bool unlocked, bool allow_rct);
     std::vector<size_t> select_available_outputs(const std::function<bool(const transfer_details &td)> &f);
