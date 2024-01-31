@@ -8072,6 +8072,15 @@ uint64_t wallet2::get_dynamic_base_fee_estimate()
   LOG_PRINT_L1("Failed to query base fee, using " << print_money(base_fee));
   return base_fee;
 }
+std::vector<uint64_t> wallet2::get_dynamic_base_fee_scaling_estimate()
+{
+  std::vector<uint64_t> fees;
+  boost::optional<std::string> result = m_node_rpc_proxy.get_dynamic_base_fee_estimate_2021_scaling(FEE_ESTIMATE_GRACE_BLOCKS, fees);
+  if (!result)
+    return fees;
+  LOG_PRINT_L1("Failed to query dynamic base fees");
+  return {};
+}
 //----------------------------------------------------------------------------------------------------
 uint64_t wallet2::get_base_fee()
 {
@@ -8101,13 +8110,7 @@ uint64_t wallet2::get_base_fee(uint32_t priority)
       priority = 4;
     --priority;
 
-    std::vector<uint64_t> fees;
-    boost::optional<std::string> result = m_node_rpc_proxy.get_dynamic_base_fee_estimate_2021_scaling(FEE_ESTIMATE_GRACE_BLOCKS, fees);
-    if (result)
-    {
-      MERROR("Failed to determine base fee, using default");
-      return FEE_PER_BYTE;
-    }
+    const std::vector<uint64_t> fees = get_dynamic_base_fee_scaling_estimate();
     if (priority >= fees.size())
     {
       MERROR("Failed to determine base fee for priority " << priority << ", using default");
