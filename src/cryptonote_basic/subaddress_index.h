@@ -41,6 +41,10 @@ namespace cryptonote
     uint32_t minor;
     bool operator==(const subaddress_index& rhs) const { return !memcmp(this, &rhs, sizeof(subaddress_index)); }
     bool operator!=(const subaddress_index& rhs) const { return !(*this == rhs); }
+    bool operator<(const subaddress_index& rhs) const
+    {
+      return (major < rhs.major) || ((major == rhs.major) && (minor < rhs.minor));
+    }
     bool is_zero() const { return major == 0 && minor == 0; }
 
     BEGIN_SERIALIZE_OBJECT()
