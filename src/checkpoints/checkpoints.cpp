@@ -138,16 +138,7 @@ namespace cryptonote
   //FIXME: is this the desired behavior?
   bool checkpoints::is_alternative_block_allowed(uint64_t blockchain_height, uint64_t block_height) const
   {
-    if (0 == block_height)
-      return false;
-
-    auto it = m_points.upper_bound(blockchain_height);
-    // Is blockchain_height before the first checkpoint?
-    if (it == m_points.begin())
-      return true;
-
-    --it;
-    uint64_t checkpoint_height = it->first;
+    uint64_t checkpoint_height = get_nearest_checkpoint_height(blockchain_height);
     return checkpoint_height < block_height;
   }
   //---------------------------------------------------------------------------
@@ -156,6 +147,19 @@ namespace cryptonote
     if (m_points.empty())
       return 0;
     return m_points.rbegin()->first;
+  }
+  //---------------------------------------------------------------------------
+  uint64_t checkpoints::get_nearest_checkpoint_height(uint64_t block_height) const
+  {
+    if (m_points.empty())
+      return 0;
+
+    auto it = m_points.upper_bound(block_height);
+    if (it == m_points.begin())
+      return 0;
+
+    --it;
+    return it->first;
   }
   //---------------------------------------------------------------------------
   const std::map<uint64_t, crypto::hash>& checkpoints::get_points() const
